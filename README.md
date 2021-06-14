@@ -1,0 +1,2 @@
+# statemachine
+Spring statemachine exploration
