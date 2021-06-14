@@ -1,6 +1,6 @@
 package com.statemachine.statemachine.config.components;
 
-public enum EnrollmentState {
+public enum TransitionState {
 
     INITIAL,
     PENDING_ENROLLMENT_OVERVIEW,

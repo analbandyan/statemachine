@@ -1,11 +1,10 @@
 package com.statemachine.statemachine;
 
-import com.statemachine.statemachine.config.components.EnrollmentEvent;
-import com.statemachine.statemachine.config.components.EnrollmentState;
+import com.statemachine.statemachine.config.components.TransitionEvent;
+import com.statemachine.statemachine.config.components.TransitionState;
 import com.statemachine.statemachine.config.components.StateTransitionConditions;
 import com.statemachine.statemachine.domain.TransitionLog;
 import com.statemachine.statemachine.dto.UserEnrollmentTransitionRepository;
-import com.statemachine.statemachine.service.EnrollmentStateTransitionService;
 import com.statemachine.statemachine.service.StateMachineWrapperService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
@@ -21,16 +20,14 @@ import java.util.Map;
 @Component
 public class TestRunner implements ApplicationRunner {
 
-    private final StateMachineFactory<EnrollmentState, EnrollmentEvent> stateMachineFactory;
-    private final EnrollmentStateTransitionService enrollmentStateTransitionService;
+    private final StateMachineFactory<TransitionState, TransitionEvent> stateMachineFactory;
     private final UserEnrollmentTransitionRepository userEnrollmentTransitionRepository;
     private final StateMachineWrapperService stateMachineWrapperService;
 
-    public TestRunner(StateMachineFactory<EnrollmentState, EnrollmentEvent> stateMachineFactory,
-                      EnrollmentStateTransitionService enrollmentStateTransitionService, UserEnrollmentTransitionRepository userEnrollmentTransitionRepository,
+    public TestRunner(StateMachineFactory<TransitionState, TransitionEvent> stateMachineFactory,
+                      UserEnrollmentTransitionRepository userEnrollmentTransitionRepository,
                       StateMachineWrapperService stateMachineWrapperService) {
         this.stateMachineFactory = stateMachineFactory;
-        this.enrollmentStateTransitionService = enrollmentStateTransitionService;
         this.userEnrollmentTransitionRepository = userEnrollmentTransitionRepository;
         this.stateMachineWrapperService = stateMachineWrapperService;
     }
@@ -38,31 +35,33 @@ public class TestRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         Long userId = 123L;
-        State<EnrollmentState, EnrollmentEvent> state;
+        State<TransitionState, TransitionEvent> state;
         List<TransitionLog> all = userEnrollmentTransitionRepository.findAll();
-
 
         StateTransitionConditions.hasPendingEnrollments = true;
         StateTransitionConditions.hasAlreadySeenMycliq = false;
 
-        state = stateMachineWrapperService.submit(userId, EnrollmentEvent.NEXT, Map.of("key1", "val1", "key2", "val2"));
-//        state = enrollmentStateTransitionService.submit(userId, EnrollmentEvent.NEXT, Map.of("key1", "val1", "key2", "val2"));
+        state = stateMachineWrapperService.submit(userId, TransitionEvent.NEXT, Map.of("key1", "val1", "key2", "val2"));
         log.info("current state = " + state.getId());
         all = userEnrollmentTransitionRepository.findAll();
 
         StateTransitionConditions.hasPendingEnrollments = true;
         StateTransitionConditions.hasAlreadySeenMycliq = false;
-        state = stateMachineWrapperService.submit(userId, EnrollmentEvent.OPT_OUT_OF_ENROLLMENT, Map.of("key3", "val3", "key4", "val4"));
-//        state = enrollmentStateTransitionService.submit(userId, EnrollmentEvent.OPT_OUT_OF_ENROLLMENT, Map.of("key3", "val3", "key4", "val4"));
+        state = stateMachineWrapperService.submit(userId, TransitionEvent.OPT_OUT_OF_ENROLLMENT, Map.of("key3", "val3", "key4", "val4"));
         log.info("current state = " + state.getId());
         all = userEnrollmentTransitionRepository.findAll();
 
         StateTransitionConditions.hasPendingEnrollments = false;
         StateTransitionConditions.hasAlreadySeenMycliq = false;
-        state = stateMachineWrapperService.submit(userId, EnrollmentEvent.OPT_OUT_OF_ENROLLMENT, Map.of("key5", "val5", "key6", "val6"));
-//        state = enrollmentStateTransitionService.submit(userId, EnrollmentEvent.OPT_OUT_OF_ENROLLMENT, Map.of("key5", "val5", "key6", "val6"));
+        state = stateMachineWrapperService.submit(userId, TransitionEvent.OPT_OUT_OF_ENROLLMENT, Map.of("key5", "val5", "key6", "val6"));
         log.info("current state = " + state.getId());
         all = userEnrollmentTransitionRepository.findAll();
+
+
+        stateMachineWrapperService.resetStateMachineToState(userId, TransitionState.PENDING_ENROLLMENT_OVERVIEW);
+        StateTransitionConditions.hasPendingEnrollments = false;
+        StateTransitionConditions.hasAlreadySeenMycliq = false;
+        state = stateMachineWrapperService.submit(userId, TransitionEvent.OPT_OUT_OF_ENROLLMENT, Map.of("key5", "val5", "key6", "val6"));
 
         System.out.println();
     }

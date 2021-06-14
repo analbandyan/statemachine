@@ -1,6 +1,6 @@
 package com.statemachine.statemachine.config.components;
 
-public enum EnrollmentEvent {
+public enum TransitionEvent {
     NEXT,
     OPT_OUT_OF_ENROLLMENT,
     SKIP_ENROLLMENT_THIS_TIME,

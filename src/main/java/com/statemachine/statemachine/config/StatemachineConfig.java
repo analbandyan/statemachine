@@ -1,13 +1,12 @@
 package com.statemachine.statemachine.config;
 
-import com.statemachine.statemachine.config.components.EnrollmentEvent;
-import com.statemachine.statemachine.config.components.EnrollmentState;
-import com.statemachine.statemachine.config.components.StateTransition;
+import com.statemachine.statemachine.config.components.TransitionEvent;
+import com.statemachine.statemachine.config.components.TransitionState;
+import com.statemachine.statemachine.config.components.StateTransitionConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.config.EnableStateMachineFactory;
 import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
@@ -17,9 +16,6 @@ import org.springframework.statemachine.config.builders.StateMachineStateConfigu
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
 import org.springframework.statemachine.config.configurers.ExternalTransitionConfigurer;
 import org.springframework.statemachine.config.configurers.StateConfigurer;
-import org.springframework.statemachine.data.jpa.JpaPersistingStateMachineInterceptor;
-import org.springframework.statemachine.data.jpa.JpaRepositoryState;
-import org.springframework.statemachine.data.jpa.JpaStateMachineRepository;
 import org.springframework.statemachine.listener.StateMachineListenerAdapter;
 import org.springframework.statemachine.persist.StateMachineRuntimePersister;
 import org.springframework.statemachine.service.DefaultStateMachineService;
@@ -32,16 +28,16 @@ import java.util.Arrays;
 @Configuration
 @EnableStateMachineFactory
 @EntityScan("com")//to override/reorder StateMachineJpaRepositoriesAutoConfiguration's @EntityScan
-public class StatemachineConfig extends EnumStateMachineConfigurerAdapter<EnrollmentState, EnrollmentEvent> {
+public class StatemachineConfig extends EnumStateMachineConfigurerAdapter<TransitionState, TransitionEvent> {
 
     @Autowired
-    private StateMachineRuntimePersister<EnrollmentState, EnrollmentEvent, String> stateMachineRuntimePersister;
+    private StateMachineRuntimePersister<TransitionState, TransitionEvent, String> stateMachineRuntimePersister;
 
     @Override
-    public void configure(StateMachineConfigurationConfigurer<EnrollmentState, EnrollmentEvent> config) throws Exception {
-        var statemachineListenerAdapter = new StateMachineListenerAdapter<EnrollmentState, EnrollmentEvent>() {
+    public void configure(StateMachineConfigurationConfigurer<TransitionState, TransitionEvent> config) throws Exception {
+        var statemachineListenerAdapter = new StateMachineListenerAdapter<TransitionState, TransitionEvent>() {
             @Override
-            public void stateChanged(State<EnrollmentState, EnrollmentEvent> from, State<EnrollmentState, EnrollmentEvent> to) {
+            public void stateChanged(State<TransitionState, TransitionEvent> from, State<TransitionState, TransitionEvent> to) {
                 log.info(String.format("state changed from %s to %s", from, to));
             }
         };
@@ -55,31 +51,31 @@ public class StatemachineConfig extends EnumStateMachineConfigurerAdapter<Enroll
     }
 
     @Override
-    public void configure(StateMachineStateConfigurer<EnrollmentState, EnrollmentEvent> states) throws Exception {
-        StateConfigurer<EnrollmentState, EnrollmentEvent> stateConfigurer = states.withStates();
+    public void configure(StateMachineStateConfigurer<TransitionState, TransitionEvent> states) throws Exception {
+        StateConfigurer<TransitionState, TransitionEvent> stateConfigurer = states.withStates();
 
-        stateConfigurer.initial(StateTransition.getRootState());
+        stateConfigurer.initial(StateTransitionConfig.getRootState());
 
-        StateTransition.getIntermediateStates().forEach(stateConfigurer::state);
+        StateTransitionConfig.getIntermediateStates().forEach(stateConfigurer::state);
 
-        StateTransition.getEndStates().forEach(stateConfigurer::end);
+        StateTransitionConfig.getEndStates().forEach(stateConfigurer::end);
     }
 
     @Override
-    public void configure(StateMachineTransitionConfigurer<EnrollmentState, EnrollmentEvent> transitions) throws Exception {
-        Arrays.stream(StateTransition.values())
-                .forEach(stateTransition -> configureStateTrnsition(transitions, stateTransition))
+    public void configure(StateMachineTransitionConfigurer<TransitionState, TransitionEvent> transitions) throws Exception {
+        Arrays.stream(StateTransitionConfig.values())
+                .forEach(stateTransitionConfig -> configureStateTrnsition(transitions, stateTransitionConfig))
         ;
     }
 
-    private static void configureStateTrnsition(StateMachineTransitionConfigurer<EnrollmentState, EnrollmentEvent> transitions, StateTransition stateTransition) {
-        externalTransitionConfigurer(transitions).source(stateTransition.getInitialState())
-                .target(stateTransition.getTargetState())
-                .event(stateTransition.getTransitionEvent())
-                .guard(context -> stateTransition.getGuardPredicate().test(context));
+    private static void configureStateTrnsition(StateMachineTransitionConfigurer<TransitionState, TransitionEvent> transitions, StateTransitionConfig stateTransitionConfig) {
+        externalTransitionConfigurer(transitions).source(stateTransitionConfig.getInitialState())
+                .target(stateTransitionConfig.getTargetState())
+                .event(stateTransitionConfig.getTransitionEvent())
+                .guard(context -> stateTransitionConfig.getGuardPredicate().test(context));
     }
 
-    private static ExternalTransitionConfigurer<EnrollmentState, EnrollmentEvent> externalTransitionConfigurer(StateMachineTransitionConfigurer<EnrollmentState, EnrollmentEvent> transitions) {
+    private static ExternalTransitionConfigurer<TransitionState, TransitionEvent> externalTransitionConfigurer(StateMachineTransitionConfigurer<TransitionState, TransitionEvent> transitions) {
         try {
             return transitions.withExternal();
         } catch (Exception e) {
@@ -91,15 +87,15 @@ public class StatemachineConfig extends EnumStateMachineConfigurerAdapter<Enroll
     //--------------------
 
 //    @Bean
-//    public StateMachineRuntimePersister<EnrollmentState, EnrollmentEvent, String> stateMachineRuntimePersister(
+//    public StateMachineRuntimePersister<TransitionState, TransitionEvent, String> stateMachineRuntimePersister(
 //            JpaStateMachineRepository jpaStateMachineRepository) {
-//        return new JpaPersistingStateMachineInterceptor<EnrollmentState, EnrollmentEvent, String>(jpaStateMachineRepository);
+//        return new JpaPersistingStateMachineInterceptor<TransitionState, TransitionEvent, String>(jpaStateMachineRepository);
 //    }
 
     @Bean
-    public StateMachineService<EnrollmentState, EnrollmentEvent> stateMachineService(
-            StateMachineFactory<EnrollmentState, EnrollmentEvent> stateMachineFactory,
-            StateMachineRuntimePersister<EnrollmentState, EnrollmentEvent, String> stateMachineRuntimePersister) {
+    public StateMachineService<TransitionState, TransitionEvent> stateMachineService(
+            StateMachineFactory<TransitionState, TransitionEvent> stateMachineFactory,
+            StateMachineRuntimePersister<TransitionState, TransitionEvent, String> stateMachineRuntimePersister) {
         return new DefaultStateMachineService<>(stateMachineFactory, stateMachineRuntimePersister);
     }
 

@@ -9,28 +9,28 @@ public class StateTransitionConditions {
     public static boolean hasPendingEnrollments = false;
     public static boolean hasAlreadySeenMycliq = false;
 
-    public static Predicate<StateContext<EnrollmentState, EnrollmentEvent>> hasPendingEnrollmentsCondition() {
+    public static Predicate<StateContext<TransitionState, TransitionEvent>> hasPendingEnrollmentsCondition() {
         return (context) -> hasPendingEnrollments;
     }
 
 
-    public static Predicate<StateContext<EnrollmentState, EnrollmentEvent>> doesNotHavePendingEnrollmentsCondition() {
+    public static Predicate<StateContext<TransitionState, TransitionEvent>> doesNotHavePendingEnrollmentsCondition() {
         return hasPendingEnrollmentsCondition().negate();
     }
 
-    public static Predicate<StateContext<EnrollmentState, EnrollmentEvent>> hasAlreadySeenMycliqCondition() {
+    public static Predicate<StateContext<TransitionState, TransitionEvent>> hasAlreadySeenMycliqCondition() {
         return (context) -> hasAlreadySeenMycliq;
     }
 
-    public static Predicate<StateContext<EnrollmentState, EnrollmentEvent>> hasNotSeenMycliqCondition() {
+    public static Predicate<StateContext<TransitionState, TransitionEvent>> hasNotSeenMycliqCondition() {
         return hasAlreadySeenMycliqCondition().negate();
     }
 
-    public static Predicate<StateContext<EnrollmentState, EnrollmentEvent>> doesNotHavePendingEnrollmentsAndHasNotSeenMycliqCondition() {
+    public static Predicate<StateContext<TransitionState, TransitionEvent>> doesNotHavePendingEnrollmentsAndHasNotSeenMycliqCondition() {
         return doesNotHavePendingEnrollmentsCondition().and(hasNotSeenMycliqCondition());
     }
 
-    public static Predicate<StateContext<EnrollmentState, EnrollmentEvent>> doesNotHavePendingEnrollmentsAndHasSeenMycliqCondition() {
+    public static Predicate<StateContext<TransitionState, TransitionEvent>> doesNotHavePendingEnrollmentsAndHasSeenMycliqCondition() {
         return doesNotHavePendingEnrollmentsCondition().and(hasAlreadySeenMycliqCondition());
     }
 

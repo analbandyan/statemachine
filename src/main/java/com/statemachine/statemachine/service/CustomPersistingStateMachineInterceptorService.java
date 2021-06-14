@@ -1,7 +1,7 @@
 package com.statemachine.statemachine.service;
 
-import com.statemachine.statemachine.config.components.EnrollmentEvent;
-import com.statemachine.statemachine.config.components.EnrollmentState;
+import com.statemachine.statemachine.config.components.TransitionEvent;
+import com.statemachine.statemachine.config.components.TransitionState;
 import com.statemachine.statemachine.domain.TransitionLog;
 import com.statemachine.statemachine.dto.UserEnrollmentTransitionRepository;
 import org.springframework.messaging.Message;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class CustomPersistingStateMachineInterceptorService extends JpaPersistingStateMachineInterceptor<EnrollmentState, EnrollmentEvent, String> {
+public class CustomPersistingStateMachineInterceptorService extends JpaPersistingStateMachineInterceptor<TransitionState, TransitionEvent, String> {
 
     private final UserEnrollmentTransitionRepository userEnrollmentTransitionRepository;
 
@@ -26,23 +26,23 @@ public class CustomPersistingStateMachineInterceptorService extends JpaPersistin
     }
 
     @Override
-    public void preStateChange(State<EnrollmentState, EnrollmentEvent> state, Message<EnrollmentEvent> message, Transition<EnrollmentState, EnrollmentEvent> transition,
-                               StateMachine<EnrollmentState, EnrollmentEvent> stateMachine, StateMachine<EnrollmentState, EnrollmentEvent> rootStateMachine) {
+    public void preStateChange(State<TransitionState, TransitionEvent> state, Message<TransitionEvent> message, Transition<TransitionState, TransitionEvent> transition,
+                               StateMachine<TransitionState, TransitionEvent> stateMachine, StateMachine<TransitionState, TransitionEvent> rootStateMachine) {
 
         super.preStateChange(state, message, transition, stateMachine, rootStateMachine);
         createTransitionLog(message, transition, stateMachine);
     }
 
-    private void createTransitionLog(Message<EnrollmentEvent> message, Transition<EnrollmentState, EnrollmentEvent> transition, StateMachine<EnrollmentState, EnrollmentEvent> stateMachine) {
+    private void createTransitionLog(Message<TransitionEvent> message, Transition<TransitionState, TransitionEvent> transition, StateMachine<TransitionState, TransitionEvent> stateMachine) {
         TransitionLog transitionLog = constructTransitionLog(message, transition, stateMachine);
         userEnrollmentTransitionRepository.save(transitionLog);
     }
 
-    private TransitionLog constructTransitionLog(Message<EnrollmentEvent> message, Transition<EnrollmentState, EnrollmentEvent> transition, StateMachine<EnrollmentState, EnrollmentEvent> stateMachine) {
+    private TransitionLog constructTransitionLog(Message<TransitionEvent> message, Transition<TransitionState, TransitionEvent> transition, StateMachine<TransitionState, TransitionEvent> stateMachine) {
         Long userId = Long.valueOf(stateMachine.getId());
-        EnrollmentState fromState = transition.getSource().getId();
-        EnrollmentState toState = transition.getTarget().getId();
-        EnrollmentEvent transitionEvent = transition.getTrigger().getEvent();
+        TransitionState fromState = transition.getSource().getId();
+        TransitionState toState = transition.getTarget().getId();
+        TransitionEvent transitionEvent = transition.getTrigger().getEvent();
         MessageHeaders details = message.getHeaders();
 
         TransitionLog transitionLog = new TransitionLog();

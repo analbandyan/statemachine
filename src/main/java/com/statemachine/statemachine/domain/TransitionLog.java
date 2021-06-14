@@ -1,7 +1,7 @@
 package com.statemachine.statemachine.domain;
 
-import com.statemachine.statemachine.config.components.EnrollmentState;
-import com.statemachine.statemachine.config.components.EnrollmentEvent;
+import com.statemachine.statemachine.config.components.TransitionState;
+import com.statemachine.statemachine.config.components.TransitionEvent;
 import com.statemachine.statemachine.domain.converter.MapJsonConverter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,11 +26,11 @@ public class TransitionLog {
 
     private Long userId;
 
-    private EnrollmentState fromState;
+    private TransitionState fromState;
 
-    private EnrollmentState toState;
+    private TransitionState toState;
 
-    private EnrollmentEvent transitionEvent;
+    private TransitionEvent transitionEvent;
 
     @Convert(converter = MapJsonConverter.class)
     private Map<String, Object> details;
