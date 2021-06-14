@@ -16,6 +16,7 @@ import org.springframework.statemachine.config.builders.StateMachineStateConfigu
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
 import org.springframework.statemachine.config.configurers.ExternalTransitionConfigurer;
 import org.springframework.statemachine.config.configurers.StateConfigurer;
+import org.springframework.statemachine.data.jpa.JpaPersistingStateMachineInterceptor;
 import org.springframework.statemachine.listener.StateMachineListenerAdapter;
 import org.springframework.statemachine.persist.StateMachineRuntimePersister;
 import org.springframework.statemachine.service.DefaultStateMachineService;
@@ -35,16 +36,16 @@ public class StatemachineConfig extends EnumStateMachineConfigurerAdapter<Transi
 
     @Override
     public void configure(StateMachineConfigurationConfigurer<TransitionState, TransitionEvent> config) throws Exception {
-        var statemachineListenerAdapter = new StateMachineListenerAdapter<TransitionState, TransitionEvent>() {
+        var statemachineChangeLogger = new StateMachineListenerAdapter<TransitionState, TransitionEvent>() {
             @Override
             public void stateChanged(State<TransitionState, TransitionEvent> from, State<TransitionState, TransitionEvent> to) {
                 log.info(String.format("state changed from %s to %s", from, to));
             }
         };
-
+        
         config.withConfiguration()
                 .autoStartup(false)
-                .listener(statemachineListenerAdapter)
+                .listener(statemachineChangeLogger)
                 .and()
                 .withPersistence()
                 .runtimePersister(stateMachineRuntimePersister);

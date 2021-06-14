@@ -17,7 +17,6 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "milestone")
 public class TransitionLog {
 
     @Id

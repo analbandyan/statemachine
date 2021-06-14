@@ -3,7 +3,7 @@ package com.statemachine.statemachine.service;
 import com.statemachine.statemachine.config.components.TransitionEvent;
 import com.statemachine.statemachine.config.components.TransitionState;
 import com.statemachine.statemachine.domain.TransitionLog;
-import com.statemachine.statemachine.dto.UserEnrollmentTransitionRepository;
+import com.statemachine.statemachine.dto.TransitionLogRepository;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.statemachine.StateMachine;
@@ -18,11 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class CustomPersistingStateMachineInterceptorService extends JpaPersistingStateMachineInterceptor<TransitionState, TransitionEvent, String> {
 
-    private final UserEnrollmentTransitionRepository userEnrollmentTransitionRepository;
+    private final TransitionLogRepository transitionLogRepository;
 
-    public CustomPersistingStateMachineInterceptorService(JpaStateMachineRepository jpaStateMachineRepository, UserEnrollmentTransitionRepository userEnrollmentTransitionRepository) {
+    public CustomPersistingStateMachineInterceptorService(JpaStateMachineRepository jpaStateMachineRepository, TransitionLogRepository transitionLogRepository) {
         super(jpaStateMachineRepository);
-        this.userEnrollmentTransitionRepository = userEnrollmentTransitionRepository;
+        this.transitionLogRepository = transitionLogRepository;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class CustomPersistingStateMachineInterceptorService extends JpaPersistin
 
     private void createTransitionLog(Message<TransitionEvent> message, Transition<TransitionState, TransitionEvent> transition, StateMachine<TransitionState, TransitionEvent> stateMachine) {
         TransitionLog transitionLog = constructTransitionLog(message, transition, stateMachine);
-        userEnrollmentTransitionRepository.save(transitionLog);
+        transitionLogRepository.save(transitionLog);
     }
 
     private TransitionLog constructTransitionLog(Message<TransitionEvent> message, Transition<TransitionState, TransitionEvent> transition, StateMachine<TransitionState, TransitionEvent> stateMachine) {
