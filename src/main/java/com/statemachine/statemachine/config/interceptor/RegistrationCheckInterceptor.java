@@ -41,12 +41,12 @@ public class RegistrationCheckInterceptor implements HandlerInterceptor {
         if(lastGdprConsentUpdateTime.isPresent()) {
             Optional<TransitionLog> latestTransitionOpt = transitionLogService.findLatestTransition(userId);
             if(latestTransitionOpt.isEmpty()) {
-                registrationCheckNotPassed(String.format("User with id %d hasn't accepted accept GDPR consent.", userId));
+                registrationCheckNotPassed(String.format("User with id %d hasn't accepted GDPR consent.", userId));
             }
 
             TransitionLog latestTransition = latestTransitionOpt.get();
             if(!StateTransitionConfig.isEndState(latestTransition.getToState())) {
-                registrationCheckNotPassed(String.format("User with id %d hasn't accepted accept GDPR consent.", userId));
+                registrationCheckNotPassed(String.format("User with id %d hasn't accepted GDPR consent.", userId));
             }
 
             if(latestTransition.getCreationTime().isBefore(lastGdprConsentUpdateTime.get())) {
