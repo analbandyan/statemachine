@@ -1,4 +1,4 @@
-package com.statemachine.statemachine.config.components;
+package com.statemachine.statemachine.config.statemachine.components;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.statemachine.statemachine.config.components.StateTransitionConditions.*;
+import static com.statemachine.statemachine.config.statemachine.components.StateTransitionConditions.*;
 
 @RequiredArgsConstructor
 @Getter
@@ -26,15 +26,19 @@ public enum StateTransitionConfig {
     private final TransitionState initialState;
     private final TransitionEvent transitionEvent;
     private final Predicate<StateContext<TransitionState, TransitionEvent>> guardPredicate;
-//    or private final Predicate<Long /*userId*/> condition; - this will be better if pasing argumen in statemachine is possible
+    //    or private final Predicate<Long /*userId*/> condition; - this will be better if pasing argumen in statemachine is possible
     private final TransitionState targetState;
 
     public static TransitionState getRootState() {
         Set<TransitionState> targetStates = getTargetStates();
         return Arrays.stream(TransitionState.values())
                 .filter(state -> !targetStates.contains(state))
-        .findFirst()
-        .orElseThrow();
+                .findFirst()
+                .orElseThrow();
+    }
+
+    public static boolean isEndState(TransitionState transitionState) {
+        return getEndStates().contains(transitionState);
     }
 
     public static Set<TransitionState> getEndStates() {

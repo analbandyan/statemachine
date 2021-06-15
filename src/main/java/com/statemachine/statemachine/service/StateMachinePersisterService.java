@@ -1,7 +1,7 @@
 package com.statemachine.statemachine.service;
 
-import com.statemachine.statemachine.config.components.TransitionEvent;
-import com.statemachine.statemachine.config.components.TransitionState;
+import com.statemachine.statemachine.config.statemachine.components.TransitionEvent;
+import com.statemachine.statemachine.config.statemachine.components.TransitionState;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.persist.DefaultStateMachinePersister;

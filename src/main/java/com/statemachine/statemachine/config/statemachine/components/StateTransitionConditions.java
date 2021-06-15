@@ -1,4 +1,4 @@
-package com.statemachine.statemachine.config.components;
+package com.statemachine.statemachine.config.statemachine.components;
 
 import org.springframework.statemachine.StateContext;
 

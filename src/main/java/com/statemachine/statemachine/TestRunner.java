@@ -1,10 +1,10 @@
 package com.statemachine.statemachine;
 
-import com.statemachine.statemachine.config.components.TransitionEvent;
-import com.statemachine.statemachine.config.components.TransitionState;
-import com.statemachine.statemachine.config.components.StateTransitionConditions;
+import com.statemachine.statemachine.config.statemachine.components.StateTransitionConditions;
+import com.statemachine.statemachine.config.statemachine.components.TransitionEvent;
+import com.statemachine.statemachine.config.statemachine.components.TransitionState;
+import com.statemachine.statemachine.dao.TransitionLogRepository;
 import com.statemachine.statemachine.domain.TransitionLog;
-import com.statemachine.statemachine.dto.TransitionLogRepository;
 import com.statemachine.statemachine.service.StateMachineWrapperService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;

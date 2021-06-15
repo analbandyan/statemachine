@@ -1,4 +1,4 @@
-package com.statemachine.statemachine.dto;
+package com.statemachine.statemachine.dao;
 
 import com.statemachine.statemachine.domain.TransitionLog;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,9 +10,9 @@ import java.util.Optional;
 public interface TransitionLogRepository extends JpaRepository<TransitionLog, Long> {
 
     default Optional<TransitionLog> findLatestTransition(Long userId) {
-        return findTopByUserIdOrderById(userId);
+        return findTopByUserIdOrderByIdDesc(userId);
     }
 
-    Optional<TransitionLog> findTopByUserIdOrderById(Long userId);
+    Optional<TransitionLog> findTopByUserIdOrderByIdDesc(Long userId);
 
 }

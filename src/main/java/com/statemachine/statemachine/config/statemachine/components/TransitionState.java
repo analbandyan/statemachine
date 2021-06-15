@@ -1,10 +1,10 @@
-package com.statemachine.statemachine.config.components;
+package com.statemachine.statemachine.config.statemachine.components;
 
 public enum TransitionState {
 
     INITIAL,
     PENDING_ENROLLMENT_OVERVIEW,
-//    UNENROLLED,
+    //    UNENROLLED,
 //    ENROLLMENT_INTRO,
     PROFILE_ENRICHMENT_FIELDS,
     MATCH_PREFERENCES,

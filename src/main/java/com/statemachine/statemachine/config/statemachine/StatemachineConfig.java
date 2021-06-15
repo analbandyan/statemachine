@@ -1,8 +1,8 @@
-package com.statemachine.statemachine.config;
+package com.statemachine.statemachine.config.statemachine;
 
-import com.statemachine.statemachine.config.components.TransitionEvent;
-import com.statemachine.statemachine.config.components.TransitionState;
-import com.statemachine.statemachine.config.components.StateTransitionConfig;
+import com.statemachine.statemachine.config.statemachine.components.StateTransitionConfig;
+import com.statemachine.statemachine.config.statemachine.components.TransitionEvent;
+import com.statemachine.statemachine.config.statemachine.components.TransitionState;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -16,7 +16,6 @@ import org.springframework.statemachine.config.builders.StateMachineStateConfigu
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
 import org.springframework.statemachine.config.configurers.ExternalTransitionConfigurer;
 import org.springframework.statemachine.config.configurers.StateConfigurer;
-import org.springframework.statemachine.data.jpa.JpaPersistingStateMachineInterceptor;
 import org.springframework.statemachine.listener.StateMachineListenerAdapter;
 import org.springframework.statemachine.persist.StateMachineRuntimePersister;
 import org.springframework.statemachine.service.DefaultStateMachineService;
@@ -42,7 +41,7 @@ public class StatemachineConfig extends EnumStateMachineConfigurerAdapter<Transi
                 log.info(String.format("state changed from %s to %s", from, to));
             }
         };
-        
+
         config.withConfiguration()
                 .autoStartup(false)
                 .listener(statemachineChangeLogger)

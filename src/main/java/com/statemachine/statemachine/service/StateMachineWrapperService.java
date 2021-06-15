@@ -1,13 +1,11 @@
 package com.statemachine.statemachine.service;
 
-import com.statemachine.statemachine.config.components.TransitionEvent;
-import com.statemachine.statemachine.config.components.TransitionState;
+import com.statemachine.statemachine.config.statemachine.components.TransitionEvent;
+import com.statemachine.statemachine.config.statemachine.components.TransitionState;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.access.StateMachineAccess;
-import org.springframework.statemachine.data.jpa.JpaStateMachineRepository;
 import org.springframework.statemachine.service.StateMachineService;
 import org.springframework.statemachine.state.State;
-import org.springframework.statemachine.support.AbstractStateMachine;
 import org.springframework.statemachine.support.DefaultStateMachineContext;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

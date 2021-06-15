@@ -1,9 +1,9 @@
 package com.statemachine.statemachine.service;
 
-import com.statemachine.statemachine.config.components.TransitionEvent;
-import com.statemachine.statemachine.config.components.TransitionState;
+import com.statemachine.statemachine.config.statemachine.components.TransitionEvent;
+import com.statemachine.statemachine.config.statemachine.components.TransitionState;
+import com.statemachine.statemachine.dao.TransitionLogRepository;
 import com.statemachine.statemachine.domain.TransitionLog;
-import com.statemachine.statemachine.dto.TransitionLogRepository;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.statemachine.StateMachine;
@@ -13,6 +13,8 @@ import org.springframework.statemachine.state.State;
 import org.springframework.statemachine.transition.Transition;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
 
 @Service
 @Transactional
@@ -50,6 +52,7 @@ public class CustomPersistingStateMachineInterceptorService extends JpaPersistin
         transitionLog.setFromState(fromState);
         transitionLog.setToState(toState);
         transitionLog.setTransitionEvent(transitionEvent);
+        transitionLog.setCreationTime(Instant.now());
         transitionLog.setDetails(details);
 
         return transitionLog;
